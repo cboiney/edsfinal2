@@ -190,6 +190,7 @@ abund_model <- glm(ABUNDANCE ~ wind_dir + wind_speed +
                    final_data,
                    family = gaussian)
 
+#Summarize models
 summary(bio_model)
 summary(abund_model)
 
@@ -242,34 +243,46 @@ abund_nn_model <- nnet(
 summary(bio_nn_model)
 summary(abund_nn_model)
 
+#Test on training data
+bio_train_predictions <- predict(bio_nn_model, training_scale)
+abundance_train_predictions <- predict(abund_nn_model, training_scale)
+
+#Calculate RMSE on training to compare with validation
+bio_error_t <- (mean((training_scale$BIOVOLUME - bio_train_predictions)^2))^0.5
+cat("RMSE:", bio_error_t)
+
+#Calculate RMSE on training to compare with validation
+abundance_error_t <- (mean((training_scale$BIOVOLUME - abundance_train_predictions)^2))^0.5
+cat("RMSE:", abundance_error_t)
+
 #Make predictions
-bio_predictions <- predict(bio_nn_model, validation_scale)
-abundance_predictions <- predict(abund_nn_model, validation_scale)
+bio_valid_predictions <- predict(bio_nn_model, validation_scale)
+abundance_valid_predictions <- predict(abund_nn_model, validation_scale)
 
 #Cite: http://tutorial.math.trinity.edu/content/display-text-r#:~:text=To%20display%20(%20or%20print)%20a,print)%20to%20see%20the%20difference.
 #Looked up how to output text using cat
 
 #Calculate RMSE of biovolume predictions
-bio_error <- (mean((validation_scale$BIOVOLUME - bio_predictions)^2))^0.5
-cat("RMSE:", bio_error)
+bio_error_v <- (mean((validation_scale$BIOVOLUME - bio_valid_predictions)^2))^0.5
+cat("RMSE:", bio_error_v)
 
 #Calculate RMSE of abundance predictions
-abundance_error <- (mean((validation_scale$ABUNDANCE - abundance_predictions)^2))^0.5
-cat("RMSE:", abundance_error)
+abundance_error_v <- (mean((validation_scale$ABUNDANCE - abundance_valid_predictions)^2))^0.5
+cat("RMSE:", abundance_error_v)
 
 #remove scientific notation
 options(scipen=999)
 
 #Graph predictions vs. actual values of biovolume
 plot(validation_scale$BIOVOLUME, bio_predictions, main = "Predicted vs Actual Biovolume", 
-     xlab = "Actual Biovolume z-score (L)", ylab = "Predicted Biovolume z-score (L)")
+     xlab = "Actual Biovolume z-score", ylab = "Predicted Biovolume z-score")
 
 #predictions along this line are correct
 abline(0, 1, col = "blue")
 
 #Graph predictions vs. actual values of abundance
 plot(validation_scale$ABUNDANCE, abundance_predictions, main = "Predicted vs Actual Abundance", 
-     xlab = "Actual Abundance z-score (cells/mL)", ylab = "Predicted Abundance z-score (cells/mL)")
+     xlab = "Actual Abundance z-score", ylab = "Predicted Abundance z-score")
 
 #predictions along this line are correct
 abline(0, 1, col = "blue")
