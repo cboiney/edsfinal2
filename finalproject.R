@@ -211,7 +211,7 @@ validation_set <- final_data %>%
   filter(training == "validation")
 
 #Train neural network to predict biovolume
-bio_model <- nnet(
+bio_nn_model <- nnet(
   BIOVOLUME ~ wind_dir + wind_speed + pressure + air_temp + 
     surface_temp, 
   training_set, 
@@ -222,7 +222,7 @@ bio_model <- nnet(
 )
 
 #Train neural network to predict abundance
-abund_model <- nnet(
+abund_nn_model <- nnet(
   ABUNDANCE ~ wind_dir + wind_speed + pressure + air_temp + 
     surface_temp, 
   training_set, 
@@ -231,6 +231,10 @@ abund_model <- nnet(
   maxit = 100, 
   decay = 0.01 
 )
+
+#summarize models
+summary(bio_nn_model)
+summary(abund_nn_model)
 
 #Make predictions
 bio_predictions <- predict(bio_model, validation_set)
