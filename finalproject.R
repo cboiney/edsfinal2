@@ -14,23 +14,23 @@ library(nnet)
 
 ##STEP 1: Collect all buoy (Lake Superior water data) into one dataframe
 
-#setup site 45001:
+#Set up site 45001:
 
 site45001yr2006 <- read.table("Data/45001-2006.txt", header = TRUE)
 site45001yr2007 <- read.table("Data/45001-2007.txt", header = TRUE)
 site45001yr2012 <- read.table("Data/45001-2012.txt", header = TRUE)
 site45001yr2017 <- read.table("Data/45001-2017.txt", header = TRUE)
 
-#make all column names the same
+#Make all column names the same
 colnames(site45001yr2007) <- colnames(site45001yr2006)
 colnames(site45001yr2012) <- colnames(site45001yr2007)
 colnames(site45001yr2017) <- colnames(site45001yr2007)
 
-#group
+#Group data frames
 site45001 <- rbind(site45001yr2007, site45001yr2012,
                    site45001yr2017)
 
-#setup site 45006:
+#Set up site 45006:
 
 site45006yr2006 <- read.table("Data/45006-2006.txt", header = TRUE)
 site45006yr2007 <- read.table("Data/45006-2007.txt", header = TRUE)
@@ -87,7 +87,7 @@ algae_data_3$parsed_date <- mdy(algae_data_3$DATE_COL)
 algae_data_3$month <- month(algae_data_3$parsed_date)
 algae_data_3$year <- year(algae_data_3$parsed_date)
 
-#extract the sites we want to use for 2007 based on the map
+#Extract the sites we want to use for 2007 based on the map
 algae_sites_2007 <- algae_data_1 %>%
   filter(SITE_ID == "NLA06608-1274" | SITE_ID == "NLA06608-0890" 
          | SITE_ID == "NLA06608-0782" | SITE_ID == "NLA06608-0526"
@@ -103,11 +103,11 @@ algae_sites_2007 <- algae_data_1 %>%
          | SITE_ID == "NLA06608-1398" | SITE_ID == "NLA06608-1206"
          | SITE_ID == "NLA06608-0286")
 
-#get rid of rows where there are no measurements of biovolume or abundance
+#Get rid of rows where there are no measurements of biovolume or abundance
 algae_sites_2007 <- algae_sites_2007 %>%
   filter(BIOVOLUME != "NA" & ABUND != "NA")
 
-#extract the sites we want to use for 2012 based on the map
+#Extract the sites we want to use for 2012 based on the map
 algae_sites_2012 <- algae_data_2 %>%
   filter(SITE_ID == "NLA12_MN-R14" | SITE_ID == "NLA12_MN-147"
          | SITE_ID == "NLA12_MI-169" | SITE_ID == "NLA12_MI-162"
@@ -117,11 +117,11 @@ algae_sites_2012 <- algae_data_2 %>%
          | SITE_ID == "NLA12_MI-141" | SITE_ID == "NLA12_MI-137" 
          | SITE_ID == "NLA12_MI-164" | SITE_ID == "NLA12_MI-150")
 
-#get rid of rows where there are no measurements of biovolume or abundance
+#Get rid of rows where there are no measurements of biovolume or abundance
 algae_sites_2012 <- algae_sites_2012 %>%
   filter(BIOVOLUME != "NA" & ABUNDANCE != "NA")
 
-#extract the sites we want to use for 2017 based on the map
+#Extract the sites we want to use for 2017 based on the map
 algae_sites_2017 <- algae_data_3 %>%
   filter(SITE_ID == "NLA17_WI-10008" | SITE_ID == "NLA17_WI-10080"
          | SITE_ID == "NLA17_WI-10069" | SITE_ID == "NLA17_MI-10018"
@@ -136,7 +136,7 @@ algae_sites_2017 <- algae_data_3 %>%
          | SITE_ID == "NLA17_WI-10085" | SITE_ID == "NLA17_MI-10073"
          | SITE_ID == "NLA17_MI-10035")
 
-#get rid of rows where there are no measurements of biovolume
+#Get rid of rows where there are no measurements of biovolume
 algae_sites_2017 <- algae_sites_2017 %>%
   filter(BIOVOLUME != "NA" & ABUNDANCE != "NA")
 
@@ -173,7 +173,7 @@ final_data$date <- make_date(final_data$year, final_data$month, day = 1)
 
 ##STEP 3: Create graphs and models
 
-#plot 1:
+#Plot 1:
 ggplot(final_data, aes(x = date, y = BIOVOLUME)) + geom_point()
 ggplot(final_data, aes(x = date, y = ABUNDANCE)) + geom_point()
 
@@ -199,7 +199,7 @@ summary(abund_model)
 #Set seed so that results are consistent
 set.seed(100)
 
-#Create variableto separate training and validation sets
+#Create variable to separate training and validation sets
 validation <- rbinom(nrow(final_data), 1, prob = 0.15)
 final_data$training <- ifelse(validation == 0, "train", "validation")
 
