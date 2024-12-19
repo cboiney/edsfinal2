@@ -10,8 +10,6 @@ library(randomForest)
 library(terra)
 library(nnet)
 
-#test 3 blah
-
 #-----------------------------------------------------
 
 ##STEP 1: Collect all buoy (Lake Superior water data) into one dataframe
